@@ -25,7 +25,6 @@ const fusionVersionMeta = require(fusionVersionMetaPath);
 
 getReleases(releaseDir)
   .then(async releases => {
-    // releases = releases.slice(0, 1);
     for (const release of releases) {
       try {
         await writeVersions(release);
