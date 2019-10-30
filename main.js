@@ -25,12 +25,16 @@ const fusionVersionMeta = require(fusionVersionMetaPath);
 
 getReleases(releaseDir)
   .then(async releases => {
+    let isFirst = true;
     for (const release of releases) {
       try {
         await writeVersions(release);
-        await execFile('npm', ['version', 'patch'], {
-          cwd: fusionVersionPath,
-        });
+        if (!isFirst) {
+          isFirst = false;
+          await execFile('npm', ['version', 'patch'], {
+            cwd: fusionVersionPath,
+          });
+        }
         await execFile('npm', ['publish', dryRun && '--dry-run'].filter(Boolean), {
           cwd: fusionVersionPath,
         });
