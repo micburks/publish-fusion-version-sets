@@ -1,0 +1,11 @@
+{
+  "name": "publish-fusion-versions",
+  "version": "1.0.0",
+  "description": "Script to publish previous Fusion version sets",
+  "main": "main.js",
+  "dependencies": {
+    "toml": "^3.0.0"
+  },
+  "author": "Mickey Burks <brks.mck@gmail.com>",
+  "license": "MIT"
+}
