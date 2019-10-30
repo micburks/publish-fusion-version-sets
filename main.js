@@ -18,6 +18,7 @@ if (process.argv.length < 3) {
 }
 
 const releaseDir = path.resolve(process.argv[2]);
+const dryRun = process.argv[3] && process.argv[3] === '--dry-run';
 const fusionVersionPath = path.resolve('./fusion-version');
 const fusionVersionMetaPath = path.join(fusionVersionPath, 'package.json');
 const fusionVersionMeta = require(fusionVersionMetaPath);
@@ -31,7 +32,7 @@ getReleases(releaseDir)
         await execFile('npm', ['version', 'patch'], {
           cwd: fusionVersionPath,
         });
-        await execFile('npm', ['publish', '--dry-run'], {
+        await execFile('npm', ['publish', dryRun && '--dry-run'].filter(Boolean), {
           cwd: fusionVersionPath,
         });
         console.log(`${release.name} published successfully`);
