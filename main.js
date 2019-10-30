@@ -22,8 +22,8 @@ const fusionVersionPath = path.resolve('./fusion-version');
 const fusionVersionMetaPath = path.join(fusionVersionPath, 'package.json');
 const fusionVersionMeta = require(fusionVersionMetaPath);
 
-(await getReleases(releaseDir))
-  .then(releases => {
+getReleases(releaseDir)
+  .then(async releases => {
     // releases = releases.slice(0, 1);
     for (const release of releases) {
       try {
