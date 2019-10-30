@@ -23,18 +23,14 @@ const fusionVersionPath = path.resolve('./fusion-version');
 const fusionVersionMetaPath = path.join(fusionVersionPath, 'package.json');
 const fusionVersionMeta = require(fusionVersionMetaPath);
 
-getReleases(releaseDir)
+getReleases(releaseDir, fusionVersionMeta.version)
   .then(async releases => {
-    let isFirst = true;
     for (const release of releases) {
       try {
         await writeVersions(release);
-        if (!isFirst) {
-          isFirst = false;
-          await execFile('npm', ['version', 'patch'], {
-            cwd: fusionVersionPath,
-          });
-        }
+        await execFile('npm', ['version', release.version, '--allow-same-version'], {
+          cwd: fusionVersionPath,
+        });
         await execFile('npm', ['publish', dryRun && '--dry-run'].filter(Boolean), {
           cwd: fusionVersionPath,
         });
@@ -46,7 +42,7 @@ getReleases(releaseDir)
     }
   });
 
-async function getReleases(dir) {
+async function getReleases(dir, initialVersion) {
   const releases = await Promise.all(
     (await readDir(dir)).map(async release => {
       const releasePath = path.join(releaseDir, release, 'release.toml');
@@ -60,7 +56,11 @@ async function getReleases(dir) {
   );
   // this sort is not exactly accurate
   releases.sort((a, b) => a.ts - b.ts);
-  return releases;
+  let [major, minor, patch] = initialVersion.split('.');
+  return releases.map(release => ({
+    ...release,
+    version: `${major}.${minor}.${patch++}`,
+  }));
 }
 
 async function writeVersions(release) {
